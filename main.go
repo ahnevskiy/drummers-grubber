@@ -23,7 +23,7 @@ func init() {
 }
 func argsParse() {
 	// Parse arguments
-	flag.IntVar(&serverPort, "p", 8080, "Number of port")
+	flag.IntVar(&serverPort, "p", 8000, "Number of port")
 	flag.Parse()
 	// Print arguments in terminal
 	fmt.Printf("Number of port: [%d]\n", serverPort)
