@@ -36,7 +36,8 @@ func (r *router) New(archives *[]archiveObject) {
 }
 
 func (r *router) Start(port int) {
-	r.server.RunOnAddr(fmt.Sprintf(":%d", port))
+	// r.server.RunOnAddr(fmt.Sprintf(":%d", port))
+	r.server.Run()
 
 }
 
