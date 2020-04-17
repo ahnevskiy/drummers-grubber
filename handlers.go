@@ -54,12 +54,12 @@ func (h *ArchiveHandler) Serve() {
 		select {
 		case newValue := <-h.newValueChannel:
 			archive := readArchive(h.resultsFileName)
-			// currentDate := fmt.Sprint(time.Now().Format("2006-01-02"))
-			// lastData := archive.getLastData()
-			// if currentDate != lastData.Date {
-			archive.addData(newValue)
-			archive.saveData(h.resultsFileName)
-			// }
+			currentDate := fmt.Sprint(time.Now().Format("2006-01-02"))
+			lastData := archive.getLastData()
+			if currentDate != lastData.Date {
+				archive.addData(newValue)
+				archive.saveData(h.resultsFileName)
+			}
 		case response := <-h.getStatisticChannel:
 			if response {
 				archive := readArchive(h.resultsFileName)
@@ -87,12 +87,11 @@ func (h *ArchiveHandler) grubLoop() {
 	for {
 		currentCount := grabContent(h.sourceURL, h.parseMethod)
 		h.newValueChannel <- currentCount
-		time.Sleep(time.Minute)
-		// lastDate := fmt.Sprint(time.Now().Format("2006-01-02"))
-		// currentDate := fmt.Sprint(time.Now().Format("2006-01-02"))
-		// for lastDate == currentDate {
-		// 	time.Sleep(time.Minute)
-		// 	currentDate = fmt.Sprint(time.Now().Format("2006-01-02"))
-		// }
+		lastDate := fmt.Sprint(time.Now().Format("2006-01-02"))
+		currentDate := fmt.Sprint(time.Now().Format("2006-01-02"))
+		for lastDate == currentDate {
+			time.Sleep(time.Minute)
+			currentDate = fmt.Sprint(time.Now().Format("2006-01-02"))
+		}
 	}
 }
