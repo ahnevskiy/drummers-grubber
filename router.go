@@ -6,7 +6,10 @@ import (
 	"github.com/go-martini/martini"
 )
 
-var responsesList string
+var (
+	responsesList string
+	linksList     string
+)
 
 type router struct {
 	server        *martini.ClassicMartini
@@ -30,9 +33,13 @@ func (r *router) New(archives *[]archiveObject) {
 		getResponse{"/getVacantStat", r.getVacantStat},
 		getResponse{"/getResumeData", r.getResumeData},
 		getResponse{"/getVacantData", r.getVacantData}}
+	// r.server.
 	for _, response := range r.responsesList {
 		r.server.Get(response.response, response.handler)
-		responsesList += fmt.Sprintf("%s\n", response.response)
+		if response.response != "/" {
+			responsesList += fmt.Sprintf("%s\n", response.response)
+			linksList += fmt.Sprintf("<a href=\"%s\">%s</a><br>\n", response.response, response.response)
+		}
 	}
 
 }
@@ -59,13 +66,18 @@ func getData(h ArchiveHandler) string {
 }
 
 func (r *router) getIndex() string {
-	s := "Grabber for HH\n"
-	s += "--------------------------------\n"
-	s += "Available GET responses:\n"
-	s += responsesList
-	s += "--------------------------------\n"
-	s += "Based on GO\n"
-	s += "Author @ahnevskiy"
+	s := "<html>"
+	s += "<head><title>Drummers HH grubber</title></head>\n"
+	s += "<head><h3>It's a grabber for <a href=\"https://hh.ru/\">hh.ru</a></h3></head>\n"
+	s += "<body>"
+	s += "<hr>\n"
+	s += "<p>Available GET responses:\n"
+	s += fmt.Sprintf("<p>%s</p>", linksList)
+	s += "</p><hr>\n"
+	s += "<p>Based on Golang<br>\n"
+	s += "Author <a href=\"tg://resolve?domain=ahnevskiy\">@ahnevskiy</a></p>"
+	s += "</body>"
+	s += "</html>"
 	return s
 }
 func (r *router) getResponses() string {
