@@ -79,16 +79,20 @@ func (arch *Archive) getLastData() mainData {
 }
 
 func (arch *Archive) saveData(resultsFileName string) {
-	e, err1 := json.MarshalIndent(arch, "", "    ")
-	if err1 != nil {
-		panic(fmt.Errorf("%s", err1))
-	}
 	// println(resultsFileName)
-	f, err2 := os.Create(resultsFileName)
-	if err2 != nil {
-		panic(fmt.Errorf("%s", err2))
+	f, err := os.Create(resultsFileName)
+	if err != nil {
+		panic(fmt.Errorf("%s", err))
 	}
 	defer f.Close()
 
-	f.WriteString(string(e))
+	f.WriteString(arch.convertToJSON())
+}
+
+func (arch *Archive) convertToJSON() string {
+	data, err := json.MarshalIndent(arch, "", "    ")
+	if err != nil {
+		panic(fmt.Errorf("%s", err))
+	}
+	return string(data)
 }

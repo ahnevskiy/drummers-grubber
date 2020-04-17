@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"path/filepath"
 )
@@ -21,13 +20,6 @@ type archiveObject struct {
 func init() {
 	result = make(chan string)
 }
-func argsParse() {
-	// Parse arguments
-	flag.IntVar(&serverPort, "p", 8000, "Number of port")
-	flag.Parse()
-	// Print arguments in terminal
-	fmt.Printf("Number of port: [%d]\n", serverPort)
-}
 
 func serveArchives(archives *[]archiveObject) {
 	archs := *archives
@@ -39,7 +31,6 @@ func serveArchives(archives *[]archiveObject) {
 }
 
 func main() {
-	argsParse()
 	archives := []archiveObject{
 		archiveObject{parseResumeHH, "hh_resume.json", ArchiveHandler{}},
 		archiveObject{parseVacantHH, "hh_vacant.json", ArchiveHandler{}},

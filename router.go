@@ -25,9 +25,11 @@ func (r *router) New(archives *[]archiveObject) {
 	r.responsesList = []getResponse{
 		getResponse{"/", r.getIndex},
 		getResponse{"/getResponses", r.getResponses},
-		getResponse{"/getSummary", r.getSummary},
-		getResponse{"/getResume", r.getResume},
-		getResponse{"/getVacant", r.getVacant}}
+		getResponse{"/getSummaryStat", r.getSummaryStat},
+		getResponse{"/getResumeStat", r.getResumeStat},
+		getResponse{"/getVacantStat", r.getVacantStat},
+		getResponse{"/getResumeData", r.getResumeData},
+		getResponse{"/getVacantData", r.getVacantData}}
 	for _, response := range r.responsesList {
 		r.server.Get(response.response, response.handler)
 		responsesList += fmt.Sprintf("%s\n", response.response)
@@ -36,13 +38,20 @@ func (r *router) New(archives *[]archiveObject) {
 }
 
 func (r *router) Start(port int) {
-	// r.server.RunOnAddr(fmt.Sprintf(":%d", port))
 	r.server.Run()
 
 }
 
+func getStatistic(h ArchiveHandler) string {
+	h.getStatisticChannel <- true
+	select {
+	case msg := <-result:
+		return msg
+	}
+}
+
 func getData(h ArchiveHandler) string {
-	h.getValueChannel <- true
+	h.getDataChannel <- true
 	select {
 	case msg := <-result:
 		return msg
@@ -63,18 +72,26 @@ func (r *router) getResponses() string {
 	return responsesList
 }
 
-func (r *router) getSummary() string {
+func (r *router) getSummaryStat() string {
 	s := ""
 	for i := range r.archives {
-		s += getData(r.archives[i].handler)
+		s += getStatistic(r.archives[i].handler)
 	}
 	return s
 }
 
-func (r *router) getResume() string {
+func (r *router) getResumeStat() string {
+	return getStatistic(r.archives[0].handler)
+}
+
+func (r *router) getVacantStat() string {
+	return getStatistic(r.archives[1].handler)
+}
+
+func (r *router) getResumeData() string {
 	return getData(r.archives[0].handler)
 }
 
-func (r *router) getVacant() string {
+func (r *router) getVacantData() string {
 	return getData(r.archives[1].handler)
 }
