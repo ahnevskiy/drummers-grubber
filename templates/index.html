@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Drummers HH grubber</title>
+    </head>
+    <body>
+        <h3>It's a grabber for <a href="https://hh.ru">hh.ru</a></h3>
+        Time on server: [{{ .TimeNow}}]</a><br>
+        <hr>
+        <p>
+            Available GET responses<br>
+            
+            <p>
+                <ul>
+                    <li>
+                        <a href="{{ .LinksList}}">{{ .LinksList}}</a><br>
+                    </li>
+                </ul>
+            </p>
+        </p>
+        <hr>
+        <p>
+            Based on Golang<br>
+            Author <a href="tg://resolve?domain=ahnevskiy">@ahnevskiy</a>
+        </p>
+    </body>
+</html>
+

@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	result chan string
+	result chan Archive
 	// Variables for input arguments
 	serverPort int
 )
@@ -18,7 +18,7 @@ type archiveObject struct {
 }
 
 func init() {
-	result = make(chan string)
+	result = make(chan Archive)
 }
 
 func serveArchives(archives *[]archiveObject) {
@@ -34,9 +34,10 @@ func main() {
 	archives := []archiveObject{
 		archiveObject{parseResumeHH, "hh_resume.json", ArchiveHandler{}},
 		archiveObject{parseVacantHH, "hh_vacant.json", ArchiveHandler{}},
+		archiveObject{parseWorkersATOL, "atol.json", ArchiveHandler{}},
 	}
 	serveArchives(&archives)
-	var r router
+	var r Router
 	r.New(&archives)
 	r.Start(serverPort)
 }

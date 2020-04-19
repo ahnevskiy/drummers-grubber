@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"time"
 )
 
 type mainData struct {
@@ -64,17 +63,25 @@ func readArchive(fileName string) Archive {
 	return castArchiveData(archiveData)
 }
 
-func (arch *Archive) addData(newCount int64) {
-	firstData := arch.Data[0]
-	lastData := arch.Data[len(arch.Data)-1]
-	delta := newCount - lastData.Count
-
-	date := fmt.Sprint(time.Now().Format("2006-01-02"))
-	arch.AbsoluteDelta = newCount - firstData.Count
+func (arch *Archive) addData(newCount int64, date string) {
+	var firstData, lastData mainData
+	var delta int64
+	if len(arch.Data) != 0 {
+		firstData = arch.Data[0]
+		lastData = arch.Data[len(arch.Data)-1]
+		arch.AbsoluteDelta = newCount - firstData.Count
+		delta = newCount - lastData.Count
+	} else {
+		arch.AbsoluteDelta = 0
+		delta = 0
+	}
 	arch.Data = append(arch.Data, mainData{newCount, date, delta})
 }
 
 func (arch *Archive) getLastData() mainData {
+	if len(arch.Data) == 0 {
+		return mainData{}
+	}
 	return arch.Data[len(arch.Data)-1]
 }
 
@@ -86,11 +93,11 @@ func (arch *Archive) saveData(resultsFileName string) {
 	}
 	defer f.Close()
 
-	f.WriteString(arch.convertToJSON())
+	f.WriteString(convertToJSON(arch))
 }
 
-func (arch *Archive) convertToJSON() string {
-	data, err := json.MarshalIndent(arch, "", "    ")
+func convertToJSON(obj interface{}) string {
+	data, err := json.MarshalIndent(obj, "", "    ")
 	if err != nil {
 		panic(fmt.Errorf("%s", err))
 	}

@@ -58,9 +58,7 @@ func parseResumeHH(HTMLContext []byte) int64 {
 }
 
 func parseWorkersATOL(HTMLContext []byte) int64 {
-	targetStringAnchor := "Группа компаний АТОЛ"
-	targetString := findAnchoredString(HTMLContext, targetStringAnchor)
-	fmt.Println(string(HTMLContext))
-	resume := getTargetNumberFromString(targetString, "Группа компаний АТОЛ", "(")
-	return resume
+	// заглушка, возвращаем -1 чтобы отключить автоматическое собирание данных
+	// метод для парсинга сейчас реализовать не получается, т.к. сайт АТОЛА не доступен из внешней сетки
+	return -1
 }

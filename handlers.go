@@ -9,12 +9,12 @@ import (
 
 // ArchiveHandler is a struct to serve an archive
 type ArchiveHandler struct {
-	parseMethod         func([]byte) int64
-	resultsFileName     string
-	newValueChannel     chan int64
-	getStatisticChannel chan bool
-	getDataChannel      chan bool
-	sourceURL           string
+	parseMethod     func([]byte) int64
+	resultsFileName string
+	newValueChannel chan int64
+	newDataChannel  chan mainData
+	getDataChannel  chan bool
+	sourceURL       string
 }
 
 // New creates a new handler object
@@ -22,7 +22,7 @@ func (h *ArchiveHandler) New(parseMethod func([]byte) int64, archiveFileName str
 	h.parseMethod = parseMethod
 	h.resultsFileName = archiveFileName
 	h.newValueChannel = make(chan int64)
-	h.getStatisticChannel = make(chan bool)
+	h.newDataChannel = make(chan mainData)
 	h.getDataChannel = make(chan bool)
 	h.sourceURL = readArchive(h.resultsFileName).SourceURL
 }
@@ -57,26 +57,17 @@ func (h *ArchiveHandler) Serve() {
 			currentDate := fmt.Sprint(time.Now().Format("2006-01-02"))
 			lastData := archive.getLastData()
 			if currentDate != lastData.Date {
-				archive.addData(newValue)
+				archive.addData(newValue, currentDate)
 				archive.saveData(h.resultsFileName)
 			}
-		case response := <-h.getStatisticChannel:
-			if response {
-				archive := readArchive(h.resultsFileName)
-				lastData := archive.getLastData()
-				s := ""
-				s += fmt.Sprintf("%s\n", archive.Description)
-				s += fmt.Sprintf("\nStart date     : [%s]", archive.Data[0].Date)
-				s += fmt.Sprintf("\nLast date      : [%s]\n", lastData.Date)
-				s += fmt.Sprintf("\nLast count     : [%d]", lastData.Count)
-				s += fmt.Sprintf("\nAbsolute delta : [%d]", archive.AbsoluteDelta)
-				s += fmt.Sprintf("\nLast day delta : [%d]\n\n\n", lastData.Delta)
-				result <- s
-			}
+		case newData := <-h.newDataChannel:
+			archive := readArchive(h.resultsFileName)
+			archive.addData(newData.Count, newData.Date)
+			archive.saveData(h.resultsFileName)
 		case response := <-h.getDataChannel:
 			if response {
 				archive := readArchive(h.resultsFileName)
-				result <- archive.convertToJSON()
+				result <- archive
 			}
 		}
 	}
@@ -86,7 +77,9 @@ func (h *ArchiveHandler) Serve() {
 func (h *ArchiveHandler) grubLoop() {
 	for {
 		currentCount := grabContent(h.sourceURL, h.parseMethod)
-		h.newValueChannel <- currentCount
+		if currentCount > 0 {
+			h.newValueChannel <- currentCount
+		}
 		lastDate := fmt.Sprint(time.Now().Format("2006-01-02"))
 		currentDate := fmt.Sprint(time.Now().Format("2006-01-02"))
 		for lastDate == currentDate {
