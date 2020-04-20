@@ -23,6 +23,7 @@ type getResponse struct {
 }
 
 func (r *Router) New(archives *[]archiveObject) {
+	fmt.Printf("1")
 	r.archives = *archives
 	r.responsesList = []getResponse{
 		getResponse{"/", r.getIndex},
@@ -32,6 +33,7 @@ func (r *Router) New(archives *[]archiveObject) {
 	for _, response := range r.responsesList {
 		http.HandleFunc(response.response, response.handler)
 	}
+	fmt.Printf("2")
 
 }
 
