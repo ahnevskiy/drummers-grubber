@@ -3,5 +3,10 @@
     "description": "Динамика изменения количества резюме на сайте HeadHunter",
     "source_url": "https://hh.ru/",
     "data": [
+        {
+            "count": 44466390,
+            "date": "2020-04-20",
+            "delta": 0
+        }
     ]
 }

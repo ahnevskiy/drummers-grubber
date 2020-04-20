@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
@@ -35,9 +36,10 @@ func (r *Router) New(archives *[]archiveObject) {
 
 }
 
-func (r *Router) Start(port int) {
-	fmt.Println("Server is listening...")
-	http.ListenAndServe(":80", nil)
+func (r *Router) Start() {
+	port := os.Getenv("PORT")
+	fmt.Printf("Server is listening on port [%s]...", port)
+	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
 
 func (r *Router) getArchives(w http.ResponseWriter, req *http.Request) {

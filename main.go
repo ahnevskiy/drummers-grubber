@@ -8,7 +8,6 @@ import (
 var (
 	result chan Archive
 	// Variables for input arguments
-	serverPort int
 )
 
 type archiveObject struct {
@@ -39,5 +38,5 @@ func main() {
 	serveArchives(&archives)
 	var r Router
 	r.New(&archives)
-	r.Start(serverPort)
+	r.Start()
 }
