@@ -22,8 +22,8 @@ type getResponse struct {
 	handler  func(w http.ResponseWriter, r *http.Request)
 }
 
-func (r *Router) New(archives *[]archiveObject) {
-	fmt.Printf("1")
+func (r *Router) Start(archives *[]archiveObject) {
+	port := 3000
 	r.archives = *archives
 	r.responsesList = []getResponse{
 		getResponse{"/", r.getIndex},
@@ -33,13 +33,6 @@ func (r *Router) New(archives *[]archiveObject) {
 	for _, response := range r.responsesList {
 		http.HandleFunc(response.response, response.handler)
 	}
-	fmt.Printf("2")
-
-}
-
-func (r *Router) Start() {
-	port := 3000
-	// port := os.Getenv("PORT")
 	fmt.Printf("Server is listening on port [%d]...", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
