@@ -77,15 +77,15 @@ func (h *ArchiveHandler) Serve() {
 
 func (h *ArchiveHandler) grubLoop() {
 	for {
-		currentCount := grabContent(h.sourceURL, h.parseMethod)
-		if currentCount > 0 {
-			h.newValueChannel <- currentCount
-		}
 		lastDate := fmt.Sprint(time.Now().Format("2006-01-02"))
 		currentDate := fmt.Sprint(time.Now().Format("2006-01-02"))
 		for lastDate == currentDate {
 			time.Sleep(time.Minute)
 			currentDate = fmt.Sprint(time.Now().Format("2006-01-02"))
+		}
+		currentCount := grabContent(h.sourceURL, h.parseMethod)
+		if currentCount > 0 {
+			h.newValueChannel <- currentCount
 		}
 	}
 }
