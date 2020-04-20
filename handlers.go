@@ -31,7 +31,7 @@ func (h *ArchiveHandler) New(parseMethod func([]byte) int64, archiveFileName str
 func GetHTML(url string) []byte {
 	req, err := http.Get(url)
 	if err != nil {
-		return nil
+		return []byte
 		// panic(fmt.Errorf("%s", err))
 	}
 	defer req.Body.Close()
