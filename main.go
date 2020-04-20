@@ -36,7 +36,6 @@ func main() {
 		// archiveObject{parseWorkersATOL, "atol.json", ArchiveHandler{}},
 	}
 	var r Router
-	r.New(&archives)
-	r.Start()
+	r.Start(&archives)
 	serveArchives(&archives)
 }
