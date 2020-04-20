@@ -8,9 +8,12 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/go-martini/martini"
 )
 
 type Router struct {
+	server        *martini.ClassicMartini
 	responsesList []getResponse
 	archives      []archiveObject
 	LinksList     string
@@ -22,19 +25,21 @@ type getResponse struct {
 	handler  func(w http.ResponseWriter, r *http.Request)
 }
 
-func (r *Router) Start(archives *[]archiveObject) {
-	port := 3000
+func (r *Router) New(archives *[]archiveObject) {
 	r.archives = *archives
+	r.server = martini.Classic()
 	r.responsesList = []getResponse{
 		getResponse{"/", r.getIndex},
 		getResponse{"/getArchives", r.getArchives},
 		getResponse{"/addData", r.addData}}
 	r.LinksList = "/getArchives"
 	for _, response := range r.responsesList {
-		http.HandleFunc(response.response, response.handler)
+		r.server.Get(response.response, response.handler)
 	}
-	fmt.Printf("Server is listening on port [%d]...", port)
-	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+}
+
+func (r *Router) Start() {
+	r.server.Run()
 }
 
 func (r *Router) getArchives(w http.ResponseWriter, req *http.Request) {
