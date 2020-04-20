@@ -3,10 +3,5 @@
     "description": "Динамика изменения количества открытых вакансий на сайте HeadHunter",
     "source_url": "https://hh.ru/",
     "data": [
-        {
-            "count": 480471,
-            "date": "2020-04-20",
-            "delta": 0
-        }
     ]
 }
