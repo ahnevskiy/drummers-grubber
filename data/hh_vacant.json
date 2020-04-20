@@ -1,5 +1,5 @@
 {
-    "absolute_delta": 0,
+    "absolute_delta": 1,
     "description": "Динамика изменения количества открытых вакансий на сайте HeadHunter",
     "source_url": "https://hh.ru/",
     "data": [

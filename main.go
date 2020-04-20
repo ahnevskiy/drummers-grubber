@@ -33,7 +33,7 @@ func main() {
 	archives := []archiveObject{
 		archiveObject{parseResumeHH, "hh_resume.json", ArchiveHandler{}},
 		archiveObject{parseVacantHH, "hh_vacant.json", ArchiveHandler{}},
-		archiveObject{parseWorkersATOL, "atol.json", ArchiveHandler{}},
+		// archiveObject{parseWorkersATOL, "atol.json", ArchiveHandler{}},
 	}
 	serveArchives(&archives)
 	var r Router
